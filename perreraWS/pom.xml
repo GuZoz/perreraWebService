@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.ipartek.formacion</groupId>
 		<artifactId>perrera</artifactId>
-		<version>${project.version}</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>perreraWS</artifactId>
