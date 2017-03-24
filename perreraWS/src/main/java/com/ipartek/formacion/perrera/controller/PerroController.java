@@ -3,9 +3,11 @@ package com.ipartek.formacion.perrera.controller;
 import java.util.ArrayList;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -94,27 +96,54 @@ public class PerroController {
 		}
 	}
 
-	/*
-	 * @PUT
-	 * 
-	 * @Produces(MediaType.APPLICATION_JSON)
-	 * 
-	 * @Consumes(MediaType.APPLICATION_JSON)
-	 * 
-	 * @ApiOperation(value = "Crear nuevo perro", notes =
-	 * "Insert nuevo perro en la BBDD", response = Perro.class,
-	 * responseContainer = "Perro")
-	 * 
-	 * @ApiResponses(value = { @ApiResponse(code = 200, message = "Todo OK"),
-	 * 
-	 * @ApiResponse(code = 500, message = "Error inesperado en el servidor") })
-	 * public Response Insert(Perro perro) { try {
-	 * 
-	 * PerroDAOImpl dao = PerroDAOImpl.getInstance(); dao.insert(perro);
-	 * 
-	 * return Response.ok().entity(perro).build();
-	 * 
-	 * } catch (Exception e) { return Response.serverError().build(); } }
-	 */
+	@PUT
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Crear nuevo perro", notes = "Insert nuevo perro en la BBDD", response = Perro.class, responseContainer = "Perro")
+
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Todo OK"),
+			@ApiResponse(code = 204, message = "No se ha podido modificar el perro"),
+			@ApiResponse(code = 500, message = "Error inesperado en el servidor") })
+	public Response Update(Perro perro) {
+		Response response = Response.status(Response.Status.NO_CONTENT).build();
+		try {
+
+			PerroDAOImpl dao = PerroDAOImpl.getInstance();
+			if (dao.update(perro)) {
+				response = Response.ok().entity(perro).build();
+			}
+
+		} catch (Exception e) {
+			response = Response.serverError().build();
+		} finally {
+			return response;
+		}
+
+	}
+
+	@DELETE
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Sacrificar Perro", notes = "Eliminar perro existente en la BBDD", response = Perro.class, responseContainer = "Perro")
+
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Todo OK"),
+			@ApiResponse(code = 204, message = "No existe perro de esta id en la BBDD"),
+			@ApiResponse(code = 500, message = "Error inesperado en el servidor") })
+	public Response delete(@PathParam("id") long id) {
+		Response response = Response.noContent().build();
+		try {
+
+			PerroDAOImpl dao = PerroDAOImpl.getInstance();
+
+			if (dao.delete(id)) {
+				response = Response.ok().build();
+			}
+
+		} catch (Exception e) {
+			response = Response.serverError().build();
+		} finally {
+			return response;
+		}
+	}
 
 }
